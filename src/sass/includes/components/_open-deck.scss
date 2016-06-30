@@ -1,4 +1,6 @@
-﻿
+﻿#thumbnail-container{
+    overflow: hidden;
+}
 
 .card {
     border: 1px solid black;
@@ -23,6 +25,15 @@
     &.__thumb {
         height: 125px;
         @include blueGradient();
+
+
+        .__text{
+            font-size: 16px;
+            line-height: 125px;
+            text-align: center;
+            text-transform: capitalize;
+        }
+
     }
 
     .__textarea {

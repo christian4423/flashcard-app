@@ -52,10 +52,16 @@
 /***/ 8:
 /***/ function(module, exports) {
 
+	
 	var $currentMenu = null,
 	    renameID = "",
-	    port = 4000,
-	    cardCount = 0;
+	    port = 4000;
+
+
+
+
+
+
 
 	$(function () {
 	    var $openDeckMenu = $("[data-action=open-menu]"),
@@ -63,8 +69,11 @@
 	        $renameDeck = $("[data-action=rename-menu]"),
 	        $deleteDeck = $("[data-action=delete-menu]"),
 	        $saveID = $("[data-action=save-id]"),
-	        $addDeck = $("[data-action=add-deck]"),
+	        $addDeck = $("[data-action=add-deck]");
+
+	    var cardCount = 0,
 	        owl = $("#thumbnail-container");
+
 
 
 
@@ -170,28 +179,20 @@
 	        })
 
 	    });
-	   
+
 
 
 	    $("[data-action=add-card]").bind("click", function (e) {
 	        e.preventDefault();
 	        cardCount += 1;
-	        var content = '<div class="card __thumb"></div>'
+	        var content = `<div class="card __thumb"><div class="__text">${cardCount}</div></div>`
 
 	        owl.data('owlCarousel').addItem(content);
 
 	    })
 
 
-	    owl.owlCarousel({
-	        items: 3,
-	        slideSpeed: 200,
-	        paginationSpeed: 800,
-	        rewindSpeed: 1000,
-	        autoPlay: false,
-	        pagination: true,
-	        paginationNumbers: false,
-	    });
+
 
 
 	    $('[data-action=load-editor]').on("click", function () {
@@ -211,19 +212,60 @@
 
 	    })
 
-	});
 
-	function updateEditor(data) {
-	    console.log(data.cards)
-	    var obj = {
-	        title: data.title
+	    owl.owlCarousel({
+	        items: 3,
+	        slideSpeed: 200,
+	        rewindSpeed: 1000,
+	        dots: true
+	    });
+
+
+	    function updateEditor(data) {
+	        
+	        let $thumbnailContainer = $("#thumbnail-container");
+	        let obj = {
+	            title: data.title,
+	            cards: data.cards
+	        };
+
+	        for (let card of obj.cards) {
+	            cardCount += 1;
+	            let content = `<div class="card __thumb"><div class="__text">${card.title}</div></div>`
+
+	            owl.data('owlCarousel').addItem(content, 0);
+
+	        };
+
+
+	        
+
 	    }
 
 
-	    console.log(obj.title);
 
 
-	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	});
+
+
+
+
+
 
 /***/ }
 
