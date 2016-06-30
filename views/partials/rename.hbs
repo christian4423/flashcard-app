@@ -1,0 +1,28 @@
+{{#renameModal}}
+<!-- Start new folder modal -->
+<div class="modal fade pos-abs-cntr" id="rename-deck-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{title}}</h4>
+            </div>
+            <form class="folder-form">
+                <div class="modal-body">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon" id="sizing-addon1">{{label}}</span>
+                        <input type="text" class="form-control renameDeckInput"
+                               name="title"
+                               placeholder="{{placeholder}}"
+                               aria-describedby="sizing-addon1">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <div class="btn btn-primary" data-action="rename-menu">UPDATE</div>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{{/renameModal}}

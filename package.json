@@ -1,0 +1,39 @@
+{
+  "name": "flash-app",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "body-parser": "~1.13.2",
+    "bootstrap": "^3.3.6",
+    "bootstrap-webpack": "0.0.5",
+    "cookie-parser": "~1.3.5",
+    "css-loader": ">=0.6.3",
+    "debug": "~2.2.0",
+    "delete": "^0.3.0",
+    "exports-loader": ">=0.6.2",
+    "express": "~4.13.1",
+    "extract-text-webpack-plugin": "^0.9.1",
+    "file-loader": ">=0.8.1",
+    "gulp-run": "^1.6.12",
+    "hbs": "~3.1.0",
+    "imports-loader": ">=0.6.3",
+    "jquery": "^2.2.0",
+    "json-loader": "^0.5.4",
+    "less": "^2.7.1",
+    "less-loader": "^2.2.3",
+    "mongoose": "^4.5.0",
+    "morgan": "~1.6.1",
+    "node-sass": "^3.4.2",
+    "node-sass-middleware": "0.8.0",
+    "owl-carousel-2": "0.0.3",
+    "resolve-url-loader": "^1.4.3",
+    "sass-loader": "^3.1.2",
+    "serve-favicon": "~2.3.0",
+    "style-loader": "^0.13.0",
+    "url-loader": ">=0.5.5",
+    "webpack": "^1.12.2"
+  }
+}

@@ -1,0 +1,56 @@
+﻿
+
+.card {
+    border: 1px solid black;
+    height: 300px;
+    width: 90%;
+    margin: 20px auto;
+    border: 1px solid black;
+    @include blueGradient();
+
+
+    .__label {
+        padding: 10px;
+
+        .__text {
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 0 2px #000;
+        }
+    }
+
+    &.__thumb {
+        height: 125px;
+        @include blueGradient();
+    }
+
+    .__textarea {
+        textarea {
+            color: #666;
+            font-size: 14px;
+            margin-left: 5%;
+            padding: 10px;
+            height: 225px;
+            width: 90%;
+            border: #999 1px solid;
+            font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+            transition: all 0.25s ease-in-out;
+            -webkit-transition: all 0.25s ease-in-out;
+            -moz-transition: all 0.25s ease-in-out;
+            box-shadow: 0 0 5px rgba(81, 203, 238, 0);
+            -webkit-box-shadow: 0 0 5px rgba(81, 203, 238, 0);
+            -moz-box-shadow: 0 0 5px rgba(81, 203, 238, 0);
+
+            &:focus {
+                color: #000;
+                outline: none;
+                border: #35a5e5 1px solid;
+                font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+                box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+                -webkit-box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+                -moz-box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+            }
+        }
+    }
+}
