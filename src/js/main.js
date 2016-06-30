@@ -15,7 +15,8 @@ $(function () {
         $renameDeck = $("[data-action=rename-menu]"),
         $deleteDeck = $("[data-action=delete-menu]"),
         $saveID = $("[data-action=save-id]"),
-        $addDeck = $("[data-action=add-deck]");
+        $addDeck = $("[data-action=add-deck]"),
+        $clearCards = $("[data-action=clear-owl]");
 
     var cardCount = 0,
         owl = $("#thumbnail-container");
@@ -126,6 +127,15 @@ $(function () {
 
     });
 
+    $clearCards.bind('click', function (e) {
+        console.log('hit')
+        for (i = cardCount; i > 0; i--) {
+            console.log(i)
+            owl.data('owlCarousel').removeItem();
+        }
+        cardCount = 0
+    });
+
 
 
     $("[data-action=add-card]").bind("click", function (e) {
@@ -168,7 +178,7 @@ $(function () {
 
 
     function updateEditor(data) {
-        
+
         let $thumbnailContainer = $("#thumbnail-container");
         let obj = {
             title: data.title,
@@ -184,7 +194,7 @@ $(function () {
         };
 
 
-        
+
 
     }
 
