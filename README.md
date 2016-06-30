@@ -15,7 +15,8 @@ Templating: Handlebars
 To start:
 
 You need MongoDB and node installed
-You will need Express npm i express -g
+
+You will need Express (npm i express -g)
 
 If you want to bundle up new packages you will need webpack installed(npm i webpack -g)
 
