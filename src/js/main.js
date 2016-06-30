@@ -128,12 +128,10 @@ $(function () {
     });
 
     $clearCards.bind('click', function (e) {
-        console.log('hit')
         for (i = cardCount; i > 0; i--) {
-            console.log(i)
             owl.data('owlCarousel').removeItem();
-        }
-        cardCount = 0
+        };
+        cardCount = 0;
     });
 
 
@@ -141,7 +139,7 @@ $(function () {
     $("[data-action=add-card]").bind("click", function (e) {
         e.preventDefault();
         cardCount += 1;
-        var content = `<div class="card __thumb"><div class="__text">${cardCount}</div></div>`
+        var content = `<div class="card __thumb"><div class="__text">${cardCount}</div></div>`;
 
         owl.data('owlCarousel').addItem(content);
 

@@ -12,24 +12,24 @@
                 <div class="folder-select_btn" data-action="open-menu" data-id="{{id}}"></div>
                 <div class="folder-menu active" id="{{_id}}--menu">
                     <div class="row">
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 folder-menu-col">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 folder-menu-col" data-action="load-editor" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#open-deck-modal" data-id="{{id}}">
                             <div class="folder-menu-option-container">
-                                <span class="folder-menu-option"  data-action="load-editor" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#open-deck-modal" data-id="{{id}}">OPEN</span>
+                                <span class="folder-menu-option">OPEN</span>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 folder-menu-col">
-                            <div class="folder-menu-option-container" data-action="save-id" data-toggle="modal" data-target="#rename-deck-modal" data-id="{{id}}">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 folder-menu-col" data-action="save-id" data-toggle="modal" data-target="#rename-deck-modal" data-id="{{id}}">
+                            <div class="folder-menu-option-container" >
                                 <span class="folder-menu-option" >RENAME</span>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 folder-menu-col">
-                            <div class="folder-menu-option-container" data-action="save-id" data-toggle="modal" data-target="#delete-deck-modal" data-id="{{id}}">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 folder-menu-col" data-action="save-id" data-toggle="modal" data-target="#delete-deck-modal" data-id="{{id}}">
+                            <div class="folder-menu-option-container" >
                                 <span class="folder-menu-option">DELETE</span>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 folder-menu-col">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 folder-menu-col" data-action="close-menu" data-id="{{id}}--menu">
                             <div class="folder-menu-option-container last">
-                                <span class="folder-menu-option" data-action="close-menu" data-id="{{id}}--menu">CLOSE</span>
+                                <span class="folder-menu-option" >CLOSE</span>
                             </div>
                         </div>
                     </div>
