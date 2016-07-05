@@ -1,9 +1,27 @@
 ﻿#thumbnail-container{
     overflow: hidden;
 }
-
+.__deck-editor{
+    width:1200px;
+            position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height:420px;
+        margin: auto;
+    @media(max-width: 1200px){
+        width:1000px;
+                margin:0 auto;
+        margin-top: 100px;
+    }
+    @media(max-width: 1000px){
+        width:90%;
+        margin:0 auto;
+        margin-top: 100px;
+    }
+}
 .card {
-    border: 1px solid black;
     height: 300px;
     width: 90%;
     margin: 20px auto;
@@ -24,14 +42,39 @@
 
     &.__thumb {
         height: 125px;
+        cursor: pointer;
+        position: relative;
         @include blueGradient();
 
+
+        
+
+        
+
+        &:hover{
+            background-color: #000;
+            .__upperRightIcon{
+                display: inline;
+            }
+        }
 
         .__text{
             font-size: 16px;
             line-height: 125px;
             text-align: center;
             text-transform: capitalize;
+        }
+
+        .__upperRightIcon{
+            position: fixed;
+            top: 25px;
+            right: 15px;
+            font-size: 1.5em;
+            display: none;
+            &:hover{
+                color: #fff;
+            }
+
         }
 
     }
@@ -63,5 +106,17 @@
                 -moz-box-shadow: 0 0 5px rgba(81, 203, 238, 1);
             }
         }
+    }
+}
+
+#rename-card-modal{
+    .__modal{
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 200px;
+        margin: auto;
     }
 }

@@ -2,11 +2,13 @@
 var express = require('express'),
     hbs = require('hbs'),
     path = require('path'),
+    Guid = require('guid'),
     favicon = require('serve-favicon'),
     logger = require('morgan'),
     cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
-    mongoose = require('mongoose');
+    mongoose = require('mongoose'),
+    guid = Guid.create();
 
 
 var routes = require('./routes/index');
@@ -55,7 +57,11 @@ if (app.get('env') === 'development') {
 
 var Schema = new mongoose.Schema({
     title: String,
-    cards: Array
+    cards: Array,
+    created: {
+        type: Date,
+        default: Date.now
+    }
 })
 
 var flashcard = mongoose.model('flashcard', Schema)
@@ -66,9 +72,10 @@ app.post('/add', function (req, res) {
         title: title,
         cards: [
             {
-                "title": "new card",
-                "front": "edit me",
-                "back": "edit me"
+                id: new Guid.create().value,
+                title: "new card",
+                front: "edit me",
+                back: "edit me"
             }
         ]
     }).save(function (err, doc) {
@@ -80,6 +87,52 @@ app.post('/add', function (req, res) {
     })
     res.end("yes")
 });
+
+
+app.post('/addCard/:id', function (req, res) {
+    var id = req.params.id,
+        title = req.body.title,
+        front = req.body.front,
+        back = req.body.back;
+
+
+    mongoose.model('flashcard').findOne({ _id: id }, function (err, foundObj) {
+        if (err) {
+            console.log(err)
+            res.status(500).send();
+        } else {
+            if (!foundObj) {
+                res.status(404).send();
+            } else {
+                let card = {
+                    id: new Guid.create().value,
+                    title: title,
+                    front: front,
+                    back: back
+                };
+
+                foundObj.cards.push(card);
+                foundObj.save(function (err, updateObj) {
+                    if (err) {
+                        console.log(err)
+                        res.status(500).send();
+                    } else {
+                        console.log("success")
+                    };
+                });
+                res.send(foundObj);
+                res.end();
+            }
+        }
+    });
+
+
+
+
+});
+
+
+
 app.post('/update/:id', function (req, res) {
     var id = req.params.id;
     console.log(id)
@@ -110,9 +163,35 @@ app.post('/update/:id', function (req, res) {
 
 });
 
+app.post('/updateCard/:id', function (req, res) {
+    var id = req.params.id;
+    var cardID = req.body.cardID
+    console.log(cardID)
+
+    mongoose.model('flashcard').findOne({ _id: id }, function (err, foundObj) {
+        if (err) {
+            console.log(err)
+            res.status(500).send();
+        } else {
+            if (!foundObj) {
+                res.status(404).send();
+            } else {
+
+
+                console.log(foundObj.cards)
+
+
+                res.send(foundObj);
+                res.end();
+            }
+        }
+    });
+});
+
 app.get('/getDeck/:id', function (req, res) {
     var id = req.params.id;
-    console.log(id)
+    console.log(id);
+    console.log(guid.value)
     mongoose.model('flashcard').findOne({ _id: id }, function (err, foundObj) {
         if (err) {
             console.log(err)
@@ -123,9 +202,10 @@ app.get('/getDeck/:id', function (req, res) {
             } else {
 
                 let baseCard = {
-                    "title": "new card",
-                    "front": "edit me",
-                    "back": "edit me"
+                    id: new Guid.create().value,
+                    title: "new card",
+                    front: "edit me",
+                    back: "edit me"
                 };
 
                 if (!foundObj.cards) {
@@ -142,7 +222,7 @@ app.get('/getDeck/:id', function (req, res) {
                     foundObj.save(function (err) {
                         if (err) {
                             console.log(err)
-                        } 
+                        }
                     });
                 }
                 res.send(foundObj)
