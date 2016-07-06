@@ -8,7 +8,9 @@ var express = require('express'),
     cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
-    guid = Guid.create();
+    guid = Guid.create(),
+    localDB = 'mongodb://localhost/flashcards',
+    Flashcard = require('./models/flashcard.model.js');
 
 
 var routes = require('./routes/index');
@@ -52,23 +54,13 @@ if (app.get('env') === 'development') {
             error: err
         });
     });
-    mongoose.connect('mongodb://localhost/flashcards');
+    mongoose.connect(localDB);
 }
 
-var Schema = new mongoose.Schema({
-    title: String,
-    cards: Array,
-    created: {
-        type: Date,
-        default: Date.now
-    }
-})
-
-var flashcard = mongoose.model('flashcard', Schema)
 
 app.post('/add', function (req, res) {
     var title = req.body.title;
-    new flashcard({
+    new Flashcard({
         title: title,
         cards: [
             {
@@ -96,7 +88,7 @@ app.post('/addCard/:id', function (req, res) {
         back = req.body.back;
 
 
-    mongoose.model('flashcard').findOne({ _id: id }, function (err, foundObj) {
+    Flashcard.findOne({ _id: id }, function (err, foundObj) {
         if (err) {
             console.log(err)
             res.status(500).send();
@@ -131,12 +123,10 @@ app.post('/addCard/:id', function (req, res) {
 
 });
 
-
-
 app.post('/update/:id', function (req, res) {
     var id = req.params.id;
     console.log(id)
-    mongoose.model('flashcard').findOne({ _id: id }, function (err, foundObj) {
+    Flashcard.findOne({ _id: id }, function (err, foundObj) {
         if (err) {
             console.log(err)
             res.status(500).send();
@@ -164,26 +154,18 @@ app.post('/update/:id', function (req, res) {
 });
 
 app.post('/updateCard/:id', function (req, res) {
-    var id = req.params.id;
-    var cardID = req.body.cardID
-    console.log(cardID)
+    var id = req.params.id,
+        title = req.body.title;
 
-    mongoose.model('flashcard').findOne({ _id: id }, function (err, foundObj) {
-        if (err) {
-            console.log(err)
-            res.status(500).send();
-        } else {
-            if (!foundObj) {
-                res.status(404).send();
-            } else {
-
-
-                console.log(foundObj.cards)
-
-
-                res.send(foundObj);
-                res.end();
-            }
+    Flashcard.update({'cards.id': id}, {'$set': {
+        'cards.$.id': id,
+        'cards.$.title': title
+    }}, function(err, obj){
+        if(err){
+            console.log(err);
+        } else{
+            res.send(obj)
+            res.end();
         }
     });
 });
@@ -192,7 +174,7 @@ app.get('/getDeck/:id', function (req, res) {
     var id = req.params.id;
     console.log(id);
     console.log(guid.value)
-    mongoose.model('flashcard').findOne({ _id: id }, function (err, foundObj) {
+    Flashcard.findOne({ _id: id }, function (err, foundObj) {
         if (err) {
             console.log(err)
             res.status(500).send();
@@ -233,9 +215,10 @@ app.get('/getDeck/:id', function (req, res) {
     });
 
 });
+
 app.post('/delete/:id', function (req, res) {
     var id = req.params.id;
-    mongoose.model('flashcard').findOneAndRemove({ _id: id }, function (err, foundObj) {
+    Flashcard.findOneAndRemove({ _id: id }, function (err, foundObj) {
         if (err) {
             console.log(err)
             res.status(500).send();
@@ -247,3 +230,4 @@ app.post('/delete/:id', function (req, res) {
 });
 
 module.exports = app;
+

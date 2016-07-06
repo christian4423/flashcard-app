@@ -57,9 +57,11 @@
 	    renameID = "",
 	    port = 4000,
 	    tempID = "",
-	    cardID = "";
+	    cardID = "",
+	    debug = true;
 
-
+	var cardCount = 0,
+	    owl = $("#thumbnail-container");
 
 
 
@@ -75,10 +77,9 @@
 	        $clearCards = $("[data-action=clear-owl]"),
 	        $addCard = $("[data-action=add-card]"),
 	        $loadEditor = $('[data-action=load-editor]'),
-	        $renameCard = $('[data-action="renameCard"]');
+	        $renameCard = $('[data-action=rename-card]');
 
-	    var cardCount = 0,
-	        owl = $("#thumbnail-container");
+
 
 	    owl.owlCarousel({
 	        items: 6,
@@ -90,18 +91,21 @@
 
 	    $addDeck.bind('click', function (e) {
 	        e.preventDefault();
-	        var $val = $('.newFolderName').val()
+
+	        let $val = $('.newFolderName').val(),
+	            $newDeckModal = $('#new-deck-modal');
+
 	        $.post({
 	            url: `http://localhost:${port}/add`,
 	            data: { title: $val },
 	            error: function (err) {
 	                console.log(err)
-	                $('#new-folder-modal').modal('hide');
+	                $newDeckModal.modal('hide');
 	                alert("There was an issue trying to add the deck.")
 	            },
 	            success: function () {
-	                $('#new-folder-modal').modal('hide');
-	                location.reload()
+	                $newDeckModal.modal('hide');
+	                location.reload();
 	            }
 	        })
 	        return false;
@@ -129,6 +133,8 @@
 	            $targetID.show();
 	            $currentMenu = $targetID;
 	        }
+
+	        debug ? console.log('Deck menu opened.') : $.noop();
 	        return false;
 	    })
 
@@ -141,6 +147,8 @@
 
 	        $targetMenu.hide();
 	        $currentMenu = null;
+
+	        debug ? console.log('Menu closed.') : $.noop();
 	        return false;
 	    })
 
@@ -151,14 +159,14 @@
 
 
 	        renameID = $thisID;
+	        debug ? console.log('Deck ID saved') : $.noop();
 
-
-	    })
+	    });
 
 	    $renameDeck.bind('click', function (e) {
-
 	        let $id = renameID,
-	            $val = $('.renameDeckInput').val()
+	            $val = $('.renameDeckInput').val();
+
 	        $.post({
 	            url: `http://localhost:${port}/update/${$id}`,
 	            data: { title: $val },
@@ -168,13 +176,12 @@
 	            success: function () {
 	                location.reload()
 	                renameID = "";
+	                debug ? console.log('Deck Renamed') : $.noop();
 	            }
-	        })
-
+	        });
 	    });
 
 	    $deleteDeck.bind('click', function (e) {
-
 	        let $id = renameID;
 
 	        $.post({
@@ -186,9 +193,9 @@
 	            success: function () {
 	                renameID = "";
 	                location.reload();
+	                debug ? console.log('Deck Deleted') : $.noop();
 	            }
-	        })
-
+	        });
 	    });
 
 	    $clearCards.bind('click', function (e) {
@@ -198,14 +205,12 @@
 	    $addCard.bind("click", function (e) {
 	        e.preventDefault();
 	        cardCount += 1;
-	        let $id = tempID;
-
-	        let newCardObj = {
+	        let $id = tempID,
+	        newCardObj = {
 	            title: "new card",
 	            front: "edit me",
 	            back: "edit me"
-	        }
-
+	        };
 
 	        $.post({
 	            url: `http://localhost:${port}/addCard/${$id}`,
@@ -223,38 +228,57 @@
 	                    owl.data('owlCarousel').removeItem();
 	                };
 	                cardCount = 0;
-
+	                debug ? console.log('Flashcard added') : $.noop();
 	                updateEditor(data);
 	            }
-	        })
-
-
+	        });
 	        return false;
 	    });
 
 	    $loadEditor.on("click", function (e) {
 	        var $this = $(this),
 	            $id = $this.data('id');
+	        getFlashCardsInDeck($id);
+	    });
+
+	    $renameCard.on("click", function (e) {
+	        let $this = $(this),
+	            $cardInput = $('.renameCardInput'),
+	            $renameCardModal = $('#rename-card-modal');
 
 
-	        $.get({
-	            url: `http://localhost:${port}/getDeck/${$id}`,
-	            data: "",
+	        //TODO add validation
+	        $.post({
+	            url: `http://localhost:${port}/updateCard/${cardID}`,
+	            data: {
+	                title: $cardInput.val().trim()
+	            },
 	            error: function (err) {
 	                console.log(err);
 	            },
 	            success: function (data) {
-	                updateEditor(data);
-	                tempID = $id;
+	                cardID = "";
+	                $cardInput.val('');
+	                $renameCardModal.hide();
+	                clearCarousel();
+	                getFlashCardsInDeck(tempID);
+	                debug ? console.log(`Flashcard renamed.`) : $.noop();
 	            }
-	        })
-
+	        });
 	    });
 
-	    bindCardRenameClick();
+
+	    function bindCardRenameClick() {
+	        debug ? console.log('saving card ID') : $.noop();
+	        $('[data-action="save-card-id"]').on("click", function (e) {
+	            let $this = $(this),
+	                $id = $this.data("id");
+	            cardID = $id;
+	        });
+	    };
 
 	    function updateEditor(data) {
-
+	        debug ? console.log('updating editor') : $.noop();
 	        let $thumbnailContainer = $("#thumbnail-container");
 	        let obj = {
 	            title: data.title,
@@ -268,7 +292,7 @@
 	                <span class="__upperRightIcon glyphicon glyphicon-pencil" 
 	                    data-toggle="modal" 
 	                    data-target="#rename-card-modal" 
-	                    data-action="renameCard" 
+	                    data-action="save-card-id" 
 	                    data-id="${card.id}">
 	                </span>
 	                <div class="__text">
@@ -286,35 +310,33 @@
 	    };
 
 	    function clearCarousel() {
+	        debug ? console.log('clearing editor') : $.noop();
 	        for (i = cardCount; i > 0; i--) {
 	            owl.data('owlCarousel').removeItem();
 	        };
 	        cardCount = 0;
 	    };
-	});
 
-
-	function bindCardRenameClick() {
-	    $('[data-action="renameCard"]').on("click", function (e) {
-	        let $this = $(this),
-	            $id = $this.data("id");
-	        cardID = $id
-
-	        $.post({
-	            url: `http://localhost:${port}/updateCard/${tempID}`,
-	            data: {
-	                cardID: $id
-	            },
+	    function getFlashCardsInDeck(id) {
+	        debug ? console.log('fetching flashcards') : $.noop();
+	        $.get({
+	            url: `http://localhost:${port}/getDeck/${id}`,
+	            data: "",
 	            error: function (err) {
 	                console.log(err);
 	            },
 	            success: function (data) {
-	                console.log(data)
+	                updateEditor(data);
+	                tempID = id;
 	            }
 	        })
+	    }
 
-	    });
-	}
+	    bindCardRenameClick();
+
+	});
+
+
 
 
 
