@@ -12,8 +12,7 @@ router.get('/', function (req, res, next) {
         page_title: "Flashcards",
         items: flashcard,
         newFolderModal: context.new_deck,
-        renameModal: context.rename,
-        renameCard: context.renameCard
+        renameModal: context.rename
       });
     } else {
       res.send(err)

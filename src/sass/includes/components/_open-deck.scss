@@ -3,13 +3,6 @@
 }
 .__deck-editor{
     width:1200px;
-            position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        height:420px;
-        margin: auto;
     @media(max-width: 1200px){
         width:1000px;
                 margin:0 auto;
@@ -24,6 +17,7 @@
 .card {
     height: 300px;
     width: 90%;
+    max-width:500px;
     margin: 20px auto;
     border: 1px solid black;
     @include blueGradient();
@@ -53,7 +47,7 @@
 
         &:hover{
             background-color: #000;
-            .__upperRightIcon{
+            .__icon{
                 display: inline;
             }
         }
@@ -65,17 +59,44 @@
             text-transform: capitalize;
         }
 
-        .__upperRightIcon{
+        .__input{
+            display: none;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            height: 60px;
+            margin: auto;
+            text-align: left;
+            width: 80%;
+            left: 0;
+            right: 0;
+            border: 1px solid black;
+            padding: 10px;
+            text-transform: capitalize;
+            background-color: rgba(255,255,255, 0.8);
+            font-size: 20px;
+        }
+
+        .__icon{
             position: fixed;
             top: 25px;
-            right: 15px;
             font-size: 1.5em;
             display: none;
+
+            &--upperRight{
+                right: 15px;
+            }
+
+            &--upperLeft{
+                left: 15px;
+            }
+
             &:hover{
                 color: #fff;
             }
-
         }
+
+        
 
     }
 

@@ -157,17 +157,37 @@ app.post('/updateCard/:id', function (req, res) {
     var id = req.params.id,
         title = req.body.title;
 
-    Flashcard.update({'cards.id': id}, {'$set': {
-        'cards.$.id': id,
-        'cards.$.title': title
-    }}, function(err, obj){
-        if(err){
-            console.log(err);
-        } else{
-            res.send(obj)
-            res.end();
+    Flashcard.update({ 'cards.id': id }, {
+        '$set': {
+            'cards.$.id': id,
+            'cards.$.title': title
         }
+    }, function (err, obj) {
+        if (err) {
+            console.log(err);
+            res.send(err)
+        } else {
+            res.send(obj)
+        }
+        res.end();
     });
+});
+
+app.post('/deleteCard/:id', function (req, res) {
+    var id = req.params.id,
+        cID = req.body.cardID;
+
+    Flashcard.update({ '_id': id },
+        { $pull: { "cards": { id: cID } } }, function (err, result) {
+            if (err) {
+                console.log(err);
+                res.send(err)
+            } else {
+                res.send(result)
+            }
+
+            res.end();
+        })
 });
 
 app.get('/getDeck/:id', function (req, res) {

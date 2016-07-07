@@ -152,11 +152,11 @@ $(function () {
         e.preventDefault();
         cardCount += 1;
         let $id = tempID,
-        newCardObj = {
-            title: "new card",
-            front: "edit me",
-            back: "edit me"
-        };
+            newCardObj = {
+                title: "new card",
+                front: "edit me",
+                back: "edit me"
+            };
 
         $.post({
             url: `http://localhost:${port}/addCard/${$id}`,
@@ -187,31 +187,9 @@ $(function () {
         getFlashCardsInDeck($id);
     });
 
-    $renameCard.on("click", function (e) {
-        let $this = $(this),
-            $cardInput = $('.renameCardInput'),
-            $renameCardModal = $('#rename-card-modal');
 
 
-        //TODO add validation
-        $.post({
-            url: `http://localhost:${port}/updateCard/${cardID}`,
-            data: {
-                title: $cardInput.val().trim()
-            },
-            error: function (err) {
-                console.log(err);
-            },
-            success: function (data) {
-                cardID = "";
-                $cardInput.val('');
-                $renameCardModal.hide();
-                clearCarousel();
-                getFlashCardsInDeck(tempID);
-                debug ? console.log(`Flashcard renamed.`) : $.noop();
-            }
-        });
-    });
+
 
 
     function bindCardRenameClick() {
@@ -220,6 +198,59 @@ $(function () {
             let $this = $(this),
                 $id = $this.data("id");
             cardID = $id;
+
+            var $text2switch = $this.next($('.__text'));
+            var $text2switchText = $text2switch.text();
+            var $input2switch = $text2switch.next($('.__input'));
+            $text2switch.hide();
+            $input2switch.attr('placeholder', $text2switchText);
+            $input2switch.show();
+            $input2switch.focus();
+
+            //bindCardRenameBlurSubmit();
+
+        });
+    };
+
+    function bindCardDeleteClick() {
+        $('[data-action="delete-card"]').on("click", function (e) {
+            let $this = $(this),
+                $id = $this.data("id");
+
+            cardID = $id;
+            //alert(tempID)
+            $.post({
+                url: `http://localhost:${port}/deleteCard/${tempID}`,
+                data: {
+                    cardID: cardID
+                },
+                error: function (err) {
+                    console.log(err);
+                },
+                success: function (data) {
+                    cardID = "";
+                    clearCarousel();
+                    getFlashCardsInDeck(tempID);
+                    console.log(data)
+                    debug ? console.log(`Flashcard deleted.`) : $.noop();
+                }
+            });
+        });
+    };
+
+    function bindCardRenameBlurSubmit() {
+        $('[data-action=rename-card]').blur(function (e) {
+            let $this = $(this),
+                $val = $this.val();
+
+            submitFlashcardRename($val);
+        });
+
+        $('[data-action=rename-card]').on("keypress", function (e) {
+            if (e.which == 13) {
+                let $this = $(this);
+                $this.blur();
+            }
         });
     };
 
@@ -235,22 +266,27 @@ $(function () {
             cardCount += 1;
             let content = `
             <div class="card __thumb">
-                <span class="__upperRightIcon glyphicon glyphicon-pencil" 
-                    data-toggle="modal" 
-                    data-target="#rename-card-modal" 
+                <span class="__icon __icon--upperLeft glyphicon glyphicon-remove" 
+                    data-action="delete-card" 
+                    data-id="${card.id}">
+                </span>
+                <span class="__icon __icon--upperRight glyphicon glyphicon-pencil" 
                     data-action="save-card-id" 
                     data-id="${card.id}">
                 </span>
+      
                 <div class="__text">
                     ${card.title}
                 </div>
+                <input class="__input" val="" placeholder="" data-action="rename-card" />
             </div>`;
 
             owl.data('owlCarousel').addItem(content, 0);
 
         };
 
-        bindCardRenameClick()
+        bindCardRenameClick();
+        bindCardDeleteClick();
 
 
     };
@@ -278,7 +314,34 @@ $(function () {
         })
     }
 
+    function submitFlashcardRename(val) {
+
+        if (val.length <= 0) {
+            alert("You need to enter a value")
+        } else {
+            $.post({
+                url: `http://localhost:${port}/updateCard/${cardID}`,
+                data: {
+                    title: val.trim()
+                },
+                error: function (err) {
+                    console.log(err);
+                },
+                success: function (data) {
+                    cardID = "";
+                    clearCarousel();
+                    getFlashCardsInDeck(tempID);
+                    debug ? console.log(`Flashcard renamed.`) : $.noop();
+                }
+            });
+        }
+
+
+    }
+
+
     bindCardRenameClick();
+    bindCardDeleteClick();
 
 });
 
