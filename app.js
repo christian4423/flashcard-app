@@ -192,8 +192,6 @@ app.post('/deleteCard/:id', function (req, res) {
 
 app.get('/getDeck/:id', function (req, res) {
     var id = req.params.id;
-    console.log(id);
-    console.log(guid.value)
     Flashcard.findOne({ _id: id }, function (err, foundObj) {
         if (err) {
             console.log(err)
@@ -233,6 +231,24 @@ app.get('/getDeck/:id', function (req, res) {
             }
         }
     });
+
+});
+
+app.get('/getCard/:id', function (req, res) {
+    var id = req.params.id,
+        cID = req.params.cardID;
+        console.log("Card ID: " + cID)
+    // Flashcard.findOne({ '_id': id },
+    //     { $elemMatch: { "cards": { id: cID } } }, function (err, result) {
+    //         if (err) {
+    //             console.log(err);
+    //             res.send(err)
+    //         } else {
+    //             res.send(result)
+    //         }
+
+    //         res.end();
+    //     })
 
 });
 

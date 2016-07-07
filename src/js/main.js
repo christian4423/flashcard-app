@@ -23,7 +23,9 @@ $(function () {
         $clearCards = $("[data-action=clear-owl]"),
         $addCard = $("[data-action=add-card]"),
         $loadEditor = $('[data-action=load-editor]'),
-        $renameCard = $('[data-action=rename-card]');
+        $renameCard = $('[data-action=rename-card]'),
+        $cardContainer = $('.card-container'),
+        $hideCardContainer = $('[data-action=hide-container]');
 
 
 
@@ -187,6 +189,14 @@ $(function () {
         getFlashCardsInDeck($id);
     });
 
+    $hideCardContainer.on('click', function (e) {
+        e.preventDefault();
+
+        $cardContainer.slideUp();
+
+        return false;
+    })
+
 
 
 
@@ -207,7 +217,7 @@ $(function () {
             $input2switch.show();
             $input2switch.focus();
 
-            //bindCardRenameBlurSubmit();
+            bindCardRenameBlurSubmit();
 
         });
     };
@@ -240,17 +250,21 @@ $(function () {
 
     function bindCardRenameBlurSubmit() {
         $('[data-action=rename-card]').blur(function (e) {
+            e.preventDefault();
             let $this = $(this),
                 $val = $this.val();
 
             submitFlashcardRename($val);
+            return false;
         });
 
         $('[data-action=rename-card]').on("keypress", function (e) {
             if (e.which == 13) {
+                e.preventDefault();
                 let $this = $(this);
                 $this.blur();
-            }
+                return false;
+            };
         });
     };
 
@@ -265,7 +279,7 @@ $(function () {
         for (let card of obj.cards) {
             cardCount += 1;
             let content = `
-            <div class="card __thumb">
+            <div class="card __thumb" data-action="show-cards" data-id="${card.id}">
                 <span class="__icon __icon--upperLeft glyphicon glyphicon-remove" 
                     data-action="delete-card" 
                     data-id="${card.id}">
@@ -274,7 +288,6 @@ $(function () {
                     data-action="save-card-id" 
                     data-id="${card.id}">
                 </span>
-      
                 <div class="__text">
                     ${card.title}
                 </div>
@@ -287,6 +300,7 @@ $(function () {
 
         bindCardRenameClick();
         bindCardDeleteClick();
+        showCard();
 
 
     };
@@ -311,11 +325,10 @@ $(function () {
                 updateEditor(data);
                 tempID = id;
             }
-        })
+        });
     }
 
     function submitFlashcardRename(val) {
-
         if (val.length <= 0) {
             alert("You need to enter a value")
         } else {
@@ -340,8 +353,31 @@ $(function () {
     }
 
 
-    bindCardRenameClick();
-    bindCardDeleteClick();
+    function showCard() {
+        $('[data-action=show-cards]').on("click", function (e) {
+            e.preventDefault();
+
+            let $this = $(this),
+                $id = $this.data('id');
+
+            $cardContainer.slideDown();
+            $.get({
+                url: `http://localhost:${port}/getCard/${tempID}`,
+                data: {
+                    cardID: $id
+                },
+                error: function (err) {
+                    console.log(err);
+                },
+                success: function (data) {
+                    console.log(data);
+                }
+            })
+
+
+            return false;
+        })
+    };
 
 });
 
