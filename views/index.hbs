@@ -17,9 +17,9 @@
                                 <span class="folder-menu-option">EDITOR</span>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 folder-menu-col" data-id="{{id}}">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 folder-menu-col" data-action="start-test" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#test-modal" data-id="{{id}}">
                             <div class="folder-menu-option-container">
-                                <span class="folder-menu-option">TEST</span>
+                                <span class="folder-menu-option" >TEST</span>
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 folder-menu-col" data-action="save-id" data-toggle="modal" data-target="#rename-deck-modal" data-id="{{id}}">
@@ -75,4 +75,4 @@
 {{> rename }}
 {{> delete}}
 {{> deck}}
-
+{{> test}}

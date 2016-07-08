@@ -63,7 +63,8 @@
 	var cardCount = 0,
 	    owl = $("#thumbnail-container");
 
-
+	var $testContainer = $('.test-body'),
+	testCardCount = 0;
 
 
 
@@ -75,12 +76,14 @@
 	        $saveID = $("[data-action=save-id]"),
 	        $addDeck = $("[data-action=add-deck]"),
 	        $clearCards = $("[data-action=clear-owl]"),
+	        $clearTest = $("[data-action=clear-test]"),
 	        $addCard = $("[data-action=add-card]"),
 	        $loadEditor = $('[data-action=load-editor]'),
 	        $renameCard = $('[data-action=rename-card]'),
 	        $cardContainer = $('.card-container'),
 	        $hideCardContainer = $('[data-action=hide-container]'),
-	        $cardsFrontBack = $('[data-action=save-card]');
+	        $cardsFrontBack = $('[data-action=save-card]'),
+	        $starTest = $('[data-action=start-test]');
 
 
 	    owl.owlCarousel({
@@ -90,6 +93,12 @@
 	        dots: true
 	    });
 
+	    $testContainer.owlCarousel({
+	        items: 1,
+	        slideSpeed: 200,
+	        rewindSpeed: 1000,
+	        lazyLoad: true
+	    });
 
 	    $addDeck.bind('click', function (e) {
 	        e.preventDefault();
@@ -204,13 +213,17 @@
 	        clearCarousel();
 	        let cFront = $('.card--front'),
 	            cBack = $('.card--back');
-	        
+
 	        cardID = "";
 	        tempID = ""
 	        cFront.find('textarea').val('');
 	        cBack.find('textarea').val('');
 	        $cardContainer.slideUp();
 
+	    });
+
+	    $clearTest.bind('click', function (e) {
+	        clearTest();
 	    });
 
 	    $addCard.bind("click", function (e) {
@@ -258,8 +271,7 @@
 	        $cardContainer.slideUp();
 
 	        return false;
-	    })
-
+	    });
 
 	    $cardsFrontBack.on("blur", function (e) {
 	        let cFront = $('.card--front'),
@@ -292,8 +304,34 @@
 	        });
 
 
-	    })
+	    });
 
+	    $starTest.on("click", function (e) {
+	        var $this = $(this),
+	            $id = $this.data('id');
+	        startTest($id);
+	    });
+
+	    function flipTestCard(){
+	        $('[data-action=flip-card]').on("click", function (e) {
+	        let $this = $(this),
+	            $answer = $this.find('.__answer'),
+	            $question = $this.find('.__question'),
+	            $label = $this.find('.__label');
+
+	        $this.addClass('pulse');
+	        $question.toggle();
+	        $answer.toggle();
+	        setTimeout(function () { $this.removeClass('pulse') }, 250);
+	        if ($label.text() === "Question") {
+	            $label.text("Answer");
+	            return false;
+	        } else {
+	            $label.text("Question");
+	            return false;
+	        };
+	    });
+	    }
 
 
 	    function bindCardRenameClick() {
@@ -407,6 +445,13 @@
 	        cardCount = 0;
 	    };
 
+	    function clearTest() {
+	        for (i = testCardCount; i > 0; i--) {
+	            $testContainer.data('owlCarousel').removeItem();
+	        };
+	        testCardCount = 0;
+	    };
+
 	    function getFlashCardsInDeck(id) {
 	        debug ? console.log('fetching flashcards') : $.noop();
 	        $.get({
@@ -417,6 +462,21 @@
 	            },
 	            success: function (data) {
 	                updateEditor(data);
+	                tempID = id;
+	            }
+	        });
+	    }
+
+	    function startTest(id) {
+	        debug ? console.log('fetching flashcards') : $.noop();
+	        $.get({
+	            url: `http://localhost:${port}/getDeck/${id}`,
+	            data: "",
+	            error: function (err) {
+	                console.log(err);
+	            },
+	            success: function (data) {
+	                loadTest(data);
 	                tempID = id;
 	            }
 	        });
@@ -489,6 +549,37 @@
 	        cBack.find('textarea').val(obj.back);
 
 	    }
+
+	    function loadTest(data) {
+
+
+	        let count = 0;
+	        let obj = {
+	            title: data.title,
+	            cards: data.cards
+	        };
+
+	        for (let card of obj.cards) {
+	            testCardCount +=1;
+	            let content = `
+	            <div class="card __test" data-action="flip-card">
+	                <div class="__label">Question</div>
+	                <div class="__line"></div>
+	                <div class="__text">
+	                    <div class="__question">
+	                        ${card.front}
+	                    </div>
+	                    <div class="__answer">
+	                        ${card.back}
+	                    </div>
+	                </div>
+	            </div>`;
+
+
+	            $testContainer.data('owlCarousel').addItem(content);
+	        };
+	        flipTestCard();
+	    };
 
 	});
 
