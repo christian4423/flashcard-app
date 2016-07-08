@@ -25,8 +25,8 @@ $(function () {
         $loadEditor = $('[data-action=load-editor]'),
         $renameCard = $('[data-action=rename-card]'),
         $cardContainer = $('.card-container'),
-        $hideCardContainer = $('[data-action=hide-container]');
-
+        $hideCardContainer = $('[data-action=hide-container]'),
+        $cardsFrontBack = $('[data-action=save-card]');
 
 
     owl.owlCarousel({
@@ -148,6 +148,15 @@ $(function () {
 
     $clearCards.bind('click', function (e) {
         clearCarousel();
+        let cFront = $('.card--front'),
+            cBack = $('.card--back');
+        
+        cardID = "";
+        tempID = ""
+        cFront.find('textarea').val('');
+        cBack.find('textarea').val('');
+        $cardContainer.slideUp();
+
     });
 
     $addCard.bind("click", function (e) {
@@ -198,7 +207,38 @@ $(function () {
     })
 
 
+    $cardsFrontBack.on("blur", function (e) {
+        let cFront = $('.card--front'),
+            cBack = $('.card--back');
 
+        let obj = {
+            front: cFront.find('textarea').val(),
+            back: cBack.find('textarea').val()
+        }
+
+
+        console.log(obj)
+
+
+
+
+
+        $.post({
+            url: `http://localhost:${port}/updateCard/${cardID}`,
+            data: {
+                front: obj.front,
+                back: obj.back
+            },
+            error: function (err) {
+                console.log(err);
+            },
+            success: function (data) {
+                console.log('saved');
+            }
+        });
+
+
+    })
 
 
 
@@ -333,7 +373,7 @@ $(function () {
             alert("You need to enter a value")
         } else {
             $.post({
-                url: `http://localhost:${port}/updateCard/${cardID}`,
+                url: `http://localhost:${port}/updateCardTitle/${cardID}`,
                 data: {
                     title: val.trim()
                 },
@@ -370,7 +410,8 @@ $(function () {
                     console.log(err);
                 },
                 success: function (data) {
-                    console.log(data);
+                    updateCards(data[0], $id);
+                    console.log(data[0])
                 }
             })
 
@@ -378,6 +419,22 @@ $(function () {
             return false;
         })
     };
+
+    function updateCards(data, id) {
+        let cFront = $('.card--front'),
+            cBack = $('.card--back');
+        cardID = id
+        let obj = {
+            front: data.front,
+            back: data.back
+        }
+
+
+
+        cFront.find('textarea').val(obj.front);
+        cBack.find('textarea').val(obj.back);
+
+    }
 
 });
 

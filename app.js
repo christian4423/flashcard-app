@@ -153,8 +153,8 @@ app.post('/update/:id', function (req, res) {
 
 });
 
-app.post('/updateCard/:id', function (req, res) {
-    var id = req.params.id,
+app.post('/updateCardTitle/:id', function (req, res) {
+    let id = req.params.id,
         title = req.body.title;
 
     Flashcard.update({ 'cards.id': id }, {
@@ -172,6 +172,32 @@ app.post('/updateCard/:id', function (req, res) {
         res.end();
     });
 });
+
+app.post('/updateCard/:id', function (req, res) {
+    let id = req.params.id,
+        front = req.body.front,
+        back = req.body.back;
+
+    Flashcard.update({ 'cards.id': id }, {
+        '$set': {
+            'cards.$.id': id,
+            'cards.$.front': front,
+            'cards.$.back': back
+
+        }
+    }, function (err, obj) {
+        if (err) {
+            console.log(err);
+            res.send(err)
+        } else {
+            res.send(obj)
+        }
+        res.end();
+    });
+});
+
+
+
 
 app.post('/deleteCard/:id', function (req, res) {
     var id = req.params.id,
@@ -235,21 +261,28 @@ app.get('/getDeck/:id', function (req, res) {
 });
 
 app.get('/getCard/:id', function (req, res) {
-    var id = req.params.id,
-        cID = req.params.cardID;
-        console.log("Card ID: " + cID)
-    // Flashcard.findOne({ '_id': id },
-    //     { $elemMatch: { "cards": { id: cID } } }, function (err, result) {
-    //         if (err) {
-    //             console.log(err);
-    //             res.send(err)
-    //         } else {
-    //             res.send(result)
-    //         }
+    var id = req.params.id;
+    let cID = req.query.cardID;
+    console.log(id)
 
-    //         res.end();
-    //     })
+    Flashcard.findOne({ _id: id}, {cards: {$elemMatch: {id: cID}}}, function (err, obj) {
 
+        if (err) {
+            console.log(err)
+            res.status(500).send();
+        };
+
+        if (!obj) {
+            console.log(`obj not found`);
+            res.status(404).send
+        }
+        else {
+            res.send(obj.cards);
+            console.log(obj.cards)
+
+        }
+        res.end()
+    });
 });
 
 app.post('/delete/:id', function (req, res) {
