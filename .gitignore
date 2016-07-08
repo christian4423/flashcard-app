@@ -17,6 +17,7 @@ bld/
 [Oo]bj/
 
 node_modules/
+public/
 
 # Roslyn cache directories
 *.ide/
