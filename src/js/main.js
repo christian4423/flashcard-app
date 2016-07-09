@@ -12,6 +12,9 @@ var cardCount = 0,
 var $testContainer = $('.test-body'),
 testCardCount = 0;
 
+var modals = {
+    newDeckModal : $('#new-deck-modal')
+}
 
 
 $(function () {
@@ -46,25 +49,13 @@ $(function () {
         lazyLoad: true
     });
 
+    //adds deck to DB
     $addDeck.bind('click', function (e) {
         e.preventDefault();
 
-        let $val = $('.newFolderName').val(),
-            $newDeckModal = $('#new-deck-modal');
+        let $val = $('.newFolderName').val()
+        addDeck($val);
 
-        $.post({
-            url: `http://localhost:${port}/add`,
-            data: { title: $val },
-            error: function (err) {
-                console.log(err)
-                $newDeckModal.modal('hide');
-                alert("There was an issue trying to add the deck.")
-            },
-            success: function () {
-                $newDeckModal.modal('hide');
-                location.reload();
-            }
-        })
         return false;
     })
 
@@ -91,7 +82,6 @@ $(function () {
             $currentMenu = $targetID;
         }
 
-        debug ? console.log('Deck menu opened.') : $.noop();
         return false;
     })
 
@@ -531,3 +521,20 @@ $(function () {
 
 
 
+function addDeck(title) {
+
+    $.post({
+        url: `http://localhost:${port}/deck/add`,
+        data: { title: title },
+        error: function (err) {
+            console.log(err)
+            modals.newDeckModal.modal('hide');
+            alert("There was an issue trying to add the deck.")
+        },
+        success: function () {
+            modals.newDeckModal.modal('hide');
+            location.reload();
+        }
+    })
+    return false;
+}
